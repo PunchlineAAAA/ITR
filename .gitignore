@@ -1,0 +1,14 @@
+/saved_models/latest_checkpoint.pth
+/saved_models/model_epoch_1.pth
+/saved_models/model_epoch_2.pth
+/saved_models/model_epoch_3.pth
+/saved_models/model_epoch_4.pth
+/saved_models/model_epoch_5.pth
+/saved_models/model_epoch_6.pth
+/saved_models/model_epoch_7.pth
+/saved_models/model_epoch_8.pth
+/saved_models/model_epoch_9.pth
+/saved_models/model_epoch_10.pth
+/TestUtil.py
+/dataset/
+/model/
