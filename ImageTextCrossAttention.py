@@ -24,8 +24,7 @@ class ImageTextCrossAttention(nn.Module):
         image_ss_relevance = TextToImageAttention.relevance(text_features, image_ss)
 
         # Image to Text
-        itt_attention_matrix = ImageToTextAttention.preassign_attention(image_features, text_features)
-        itt_score_matrix = ImageToTextAttention.calculate_score(itt_attention_matrix)
+        itt_score_matrix = tti_score_matrix.transpose(1, 2)
         text_ss = ImageToTextAttention.text_share_semantic(text_features, itt_score_matrix)
         text_ss_relevance = ImageToTextAttention.relevance(text_ss, image_features)
 

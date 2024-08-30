@@ -1,5 +1,5 @@
 import os.path
-
+import numpy as np
 from Dataset import CustomDataset
 import torch
 from torch.utils.data import DataLoader
@@ -36,15 +36,14 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # 参数设置
-    batch_size = 8
+    batch_size = 32
     learning_rate = 0.0002
     num_epochs = 10
     model_save_path = "./saved_models/"
     checkpoint_path = os.path.join(model_save_path, "latest_checkpoint.pth")
 
     # 数据加载
-    dataset = CustomDataset("./dataset/shorter_captions.txt")
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    dataset = CustomDataset("./dataset/captions.txt")
 
     # 实例化模型
     model = Loss().to(device)
@@ -56,6 +55,10 @@ if __name__ == "__main__":
 
     # 训练开始
     for epoch in range(start_epoch, start_epoch + num_epochs):
+        indices = np.random.choice(40000, 1000, replace=False)
+        sampler = torch.utils.data.SubsetRandomSampler(indices)
+        dataloader = DataLoader(dataset, sampler=sampler, batch_size=batch_size, num_workers=8)
+
         model.train()
         running_loss = 0.0
 
