@@ -31,12 +31,14 @@ with open(captions_file, 'r', encoding='utf-8') as f:
 
         # 处理图像：如果之前已经处理过相同图像，则复用
         if image_path not in processed_images:
-            image_tensor = transform_image(image_path)
+            image_tensor = transform_image(image_path).unsqueeze(0)
+            image_tensor = model.encode_image(image_tensor)
             processed_images[image_path] = True
             image_tensors.append(image_tensor)
 
         # 转换文本为张量并转移到GPU
-        text_tensor = tokenizer(text).to(device)
+        text_tensor = tokenizer([text]).to(device)
+        text_tensor = model.encode_text(text_tensor)
         text_tensors.append(text_tensor)
 
         print(len(image_tensors))
