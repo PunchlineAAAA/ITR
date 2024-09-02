@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 
 # 得到文生图结果
-@app.route("searchfor/image", methods=["POST"])
+@app.route("/searchfor/image", methods=["POST"])
 def get_image():
     # 获取POST请求中的JSON数据
     data = request.get_json()
@@ -27,7 +27,7 @@ def get_image():
 
 
 # 得到图生文结果
-@app.route("searchfor/text", method=["POST"])
+@app.route("/searchfor/text", methods=["POST"])
 def get_text():
     # 获取POST请求中的JSON数据
     data = request.get_json()
