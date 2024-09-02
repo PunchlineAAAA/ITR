@@ -106,7 +106,10 @@ def get_top_k_similar_image_slow(top_k_indices, image_paths, user_input, previou
     # 使用这些下标查询 top_k_indices 以获得最终的结果
     final_top_k_indices = [top_k_indices[i] for i in top_k_res_indices]
 
-    return final_top_k_indices
+    # 假设这里只使用flickr8k
+    final_top_k_results = [image_paths[i * 5] for i in final_top_k_indices]
+
+    return final_top_k_results
 
 
 # 与文字相似度计算函数（慢）
@@ -123,18 +126,29 @@ def get_top_k_similar_text_slow(top_k_indices, text_descs, user_input, previous_
     # 使用这些下标查询 top_k_indices 以获得最终的结果
     final_top_k_indices = [top_k_indices[i] for i in top_k_res_indices]
 
+    # 假设这里只使用flickr8k
+    final_top_k_results = [text_descs[i] for i in final_top_k_indices]
+
     return final_top_k_indices
 
 
 if __name__ == "__main__":
-    user_input = "./dataset/images/1000268201_693b08cb0e.jpg"
+    # user_input = "./dataset/images/1000268201_693b08cb0e.jpg"
+    #
+    # # 调用函数获取与输入文本最相似的 top_k 张图像
+    # top_k_indices, top_k_similarities = get_top_k_similar_text_fast(user_input, text_tensor, top_k=5)
+    #
+    # print("Top K Similar Images Indices:", top_k_indices)
+    # print("Top K Similarities:", top_k_similarities)
+    #
+    # final_top_k_indices = get_top_k_similar_text_slow(top_k_indices, text_descs, user_input, top_k_similarities)
+    #
+    # print(final_top_k_indices)
 
-    # 调用函数获取与输入文本最相似的 top_k 张图像
-    top_k_indices, top_k_similarities = get_top_k_similar_text_fast(user_input, text_tensor, top_k=5)
+    user_input = "A girl going into a wooden building"
 
-    print("Top K Similar Images Indices:", top_k_indices)
-    print("Top K Similarities:", top_k_similarities)
+    top_k_indices, top_k_similarities = get_top_k_similar_images_fast(user_input, image_tensor)
 
-    final_top_k_indices = get_top_k_similar_text_slow(top_k_indices, text_descs, user_input, top_k_similarities)
+    final_top_k_results = get_top_k_similar_image_slow(top_k_indices, image_paths, user_input, top_k_similarities)
 
-    print(final_top_k_indices)
+    print(final_top_k_results)
