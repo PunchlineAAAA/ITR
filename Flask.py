@@ -23,6 +23,9 @@ def get_image():
 
     final_top_k_results = r.get_top_k_similar_image_slow(top_k_indices, r.image_paths, data, top_k_similarities)
 
+    prefix = "./dataset/images/"
+    final_top_k_results = [i[len(prefix):] for i in final_top_k_results]
+
     processed_data = {
         "code": 200,
         "message": final_top_k_results,
@@ -43,6 +46,8 @@ def get_text():
             "error": "No data provided"
         })
 
+    data = data["keywords"]
+
     top_k_indices, top_k_similarities = r.get_top_k_similar_text_fast(data, r.text_tensor, top_k=5)
 
     final_top_k_results = r.get_top_k_similar_text_slow(top_k_indices, r.text_descs, data, top_k_similarities)
@@ -56,4 +61,4 @@ def get_text():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

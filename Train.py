@@ -1,10 +1,22 @@
 import os.path
 import numpy as np
-from Dataset import CustomDataset
+from Dataset import CustomDataset, ValidationDataset
 import torch
 from torch.utils.data import DataLoader
 from Loss import Loss
 import torch.optim as optim
+
+
+def evaluate_model(model, dataloader, device):
+    model.eval()  # 切换到评估模式
+    running_loss = 0.0
+    with torch.no_grad():  # 禁用梯度计算
+        for batch_idx, (images, captions) in enumerate(dataloader):
+            images, captions = images.to(device), captions.to(device)
+            loss = model(captions, images)
+            running_loss += loss.item()
+
+    return running_loss / len(dataloader)
 
 
 def load_checkpoint(checkpoint_path, model, optimizer):
@@ -44,6 +56,7 @@ if __name__ == "__main__":
 
     # 数据加载
     dataset = CustomDataset("./dataset/captions.txt")
+    validation_dataset = ValidationDataset("./dataset/captions.txt")
 
     # 实例化模型
     model = Loss().to(device)
@@ -55,7 +68,7 @@ if __name__ == "__main__":
 
     # 训练开始
     for epoch in range(start_epoch, start_epoch + num_epochs):
-        indices = np.random.choice(40000, 1000, replace=False)
+        indices = np.random.choice(39000, 1000, replace=False)
         sampler = torch.utils.data.SubsetRandomSampler(indices)
         dataloader = DataLoader(dataset, sampler=sampler, batch_size=batch_size, num_workers=8)
 
@@ -78,6 +91,11 @@ if __name__ == "__main__":
 
         epoch_loss = running_loss / len(dataloader)
         print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {epoch_loss:.4f}')
+
+        # 验证阶段
+        validation_dataloader = DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
+        validation_loss = evaluate_model(model, validation_dataloader, device)
+        print(f'Epoch {epoch + 1}/{num_epochs}, Validation Loss: {validation_loss:.4f}')
 
         # 保存检查点
         save_checkpoint(epoch + 1, model, optimizer, epoch_loss, checkpoint_path)

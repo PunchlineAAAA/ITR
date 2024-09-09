@@ -129,7 +129,7 @@ def get_top_k_similar_text_slow(top_k_indices, text_descs, user_input, previous_
     # 假设这里只使用flickr8k
     final_top_k_results = [text_descs[i] for i in final_top_k_indices]
 
-    return final_top_k_indices
+    return final_top_k_results
 
 
 if __name__ == "__main__":
