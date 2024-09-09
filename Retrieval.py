@@ -52,6 +52,11 @@ model_a.eval()
 
 
 # 与图片相似度计算函数（快）
+# text_input: 文本
+# image_tensor: 缓存图像
+# top_k: 搜索范围
+# top_k_indices: 搜索图像下标
+# similarities: 快模型自信度
 def get_top_k_similar_images_fast(text_input, image_tensor, top_k=5):
     # 将文本输入转换为张量
     with torch.no_grad():
@@ -71,6 +76,11 @@ def get_top_k_similar_images_fast(text_input, image_tensor, top_k=5):
 
 
 # 与文字相似度计算函数（快）
+# image_input: 图像路径
+# text_tensor: 缓存文本
+# top_k: 搜索范围
+# top_k_indices: 搜索文本下标
+# similarities: 快模型自信度
 def get_top_k_similar_text_fast(image_input, text_tensor, top_k=5):
     # 打开图片
     image = Image.open(image_input).convert("RGB")
@@ -86,14 +96,21 @@ def get_top_k_similar_text_fast(image_input, text_tensor, top_k=5):
     # 计算相似度
     similarities = torch.matmul(text_features, image_tensor.T).squeeze(1)
 
-    # 获取相似度最高的 top_k 个图像索引
+    # 获取相似度最高的 top_k 个图像文本
     top_k_indices = similarities.topk(top_k).indices
 
     return top_k_indices, similarities[top_k_indices]
 
 
-# 与图像相似度计算函数（快）
+# 与图像相似度计算函数（慢）
+# top_k_indices: 快模型搜索图片下标
+# image_paths: 总图片数据集
+# user_input: 用户输入文本
+# previous_confidence: 快模型自信
+# top_k: 精排规模
+# final_k_results: 最终图片路径
 def get_top_k_similar_image_slow(top_k_indices, image_paths, user_input, previous_confidence, top_k=3):
+    # 五个相同图片处理一次
     top_k_image_paths = [image_paths[i * 5] for i in top_k_indices]
     user_input = [user_input] * len(top_k_indices)
 
@@ -113,7 +130,14 @@ def get_top_k_similar_image_slow(top_k_indices, image_paths, user_input, previou
 
 
 # 与文字相似度计算函数（慢）
+# top_k_indices: 快模型搜索文本下标
+# text_descs: 总文本数据集
+# user_input: 用户输入图像
+# previous_confidence: 快模型自信
+# top_k: 精排规模
+# final_k_results: 最终文本
 def get_top_k_similar_text_slow(top_k_indices, text_descs, user_input, previous_confidence, top_k=3):
+    # 五个相同图片处理一次
     top_k_text_descs = [text_descs[i] for i in top_k_indices]
     user_input = [user_input] * len(top_k_indices)
 

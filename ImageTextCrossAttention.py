@@ -5,6 +5,7 @@ from TextFeatureExtractor import TextFeatureExtractor
 from ImageFeatureExtractor import ImageFeatureExtractor
 
 
+# 图文交叉注意力模块
 class ImageTextCrossAttention(nn.Module):
     def __init__(self):
         super(ImageTextCrossAttention, self).__init__()
@@ -12,6 +13,8 @@ class ImageTextCrossAttention(nn.Module):
         self.text_feature_extractor = TextFeatureExtractor()
         self.image_feature_extractor = ImageFeatureExtractor()
 
+    # text: 文本
+    # image: 图片路径
     def forward(self, text, image):
         # 特征提取
         image_features = self.image_feature_extractor(image)
@@ -28,4 +31,5 @@ class ImageTextCrossAttention(nn.Module):
         text_ss = ImageToTextAttention.text_share_semantic(text_features, itt_score_matrix)
         text_ss_relevance = ImageToTextAttention.relevance(text_ss, image_features)
 
+        # 合相似度
         return image_ss_relevance + text_ss_relevance

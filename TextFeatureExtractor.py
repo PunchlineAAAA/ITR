@@ -10,10 +10,13 @@ class TextFeatureExtractor(nn.Module):
         # 检查是否有GPU可用
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+        # 定义分词器和模型
         self.tokenizer = BertTokenizer.from_pretrained(model_name)
         self.model = BertModel.from_pretrained(model_name).to(self.device)
 
+    # text: 文本
     def forward(self, text):
+        # 分词
         inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True).to(self.device)
 
         # 获取词嵌入

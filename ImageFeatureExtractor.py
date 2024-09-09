@@ -7,12 +7,14 @@ import torch.nn as nn
 # 加载预训练的 Faster R-CNN 模型
 faster_rcnn = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True).to('cuda' if torch.cuda.is_available() else 'cpu')
 
+# 冻结参数
 for param in faster_rcnn.parameters():
     param.requires_grad = False
 
 faster_rcnn.eval()
 
 
+# 图片特征提取模块
 class ImageFeatureExtractor(nn.Module):
     def __init__(self, d=768, k=36):
         super(ImageFeatureExtractor, self).__init__()
@@ -36,11 +38,12 @@ class ImageFeatureExtractor(nn.Module):
         self.k = k  # 前 k 个显著区域
         self.d = d  # 特征维度
 
+    # image_paths: 图片路径（多个）
     def forward(self, image_paths):
         batch_images = []
 
+        # 导入图像及预处理
         for path in image_paths:
-            # 导入图像
             image = Image.open(path).convert("RGB")
             image = self.preprocess(image).unsqueeze(0).to(self.device)
             batch_images.append(image)

@@ -4,10 +4,14 @@ import torch.nn.functional as F
 # 检查是否有GPU可用
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# 参数
+# 放大系数
 alpha = 20
 
 
+# 预分配注意力
+# image_regions: 通过 Faster-RNN 分出的图形区域特征张量
+# text_words: 通过 BERT 分词得到的特征张量
+# attention_scores: 注意力评分
 def preassign_attention(image_regions, text_words):
     # 获取 batch_size, num_boxes, emb_dim 和 seq_len
     batch_size, num_boxes, emb_dim = image_regions.shape
@@ -48,6 +52,9 @@ def preassign_attention(image_regions, text_words):
     return attention_scores
 
 
+# 相关度评分
+# attention_scores: 注意力评分
+# F_scores: 相关性评分（对应论文中的F）
 def calculate_score(attention_scores):
     # 获取维度信息
     batch_size, text_size, image_size = attention_scores.shape
@@ -78,6 +85,10 @@ def calculate_score(attention_scores):
     return F_scores
 
 
+# 提取图像与文本共享特征
+# F_scores: 相关度评分
+# text_words: 文本分词特征
+# image_share_semantics: 图像与文本共享的特征
 def image_share_semantic(image_regions, F_scores):
     # 获取维度信息
     batch_size, text_size, image_size = F_scores.shape
@@ -99,11 +110,15 @@ def image_share_semantic(image_regions, F_scores):
     return image_share_semantics
 
 
+# 计算相关度
+# image_share_semantics: 图像与文本共享的特征
+# text_words: 文本特征
+# sim: 相似度
 def relevance(text_words, image_share_semantics):
     batch_size, seq_len, emb_dim = text_words.shape
     sim = torch.zeros(batch_size, device=device)
 
-    # 遍历
+    # 遍历求平均余弦相似度
     for b in range(batch_size):
         batch_sim = 0.0
 

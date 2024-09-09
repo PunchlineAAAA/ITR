@@ -5,8 +5,9 @@ from ImageTextCrossAttention import ImageTextCrossAttention
 # 设备检测
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# 定义参数
+# 定义损失函数的 Margin
 alpha = 0.2
+
 
 class Loss(nn.Module):
     def __init__(self, margin=0.2):
@@ -14,6 +15,8 @@ class Loss(nn.Module):
         self.margin = margin
         self.image_text_cross_attention = ImageTextCrossAttention()
 
+    # captions: 文本
+    # images: 图像路径
     def forward(self, captions, images):
         batch_size = len(captions)
         similarity_matrix = torch.zeros((batch_size, batch_size), device=device)
@@ -30,7 +33,11 @@ class Loss(nn.Module):
 
         return loss.requires_grad_()
 
+    # 损失计算函数
+    # similarity_matrix: 相似度矩阵，代表一批数据彼此之间的相似度
+    # loss: 损失
     def compute_loss(self, similarity_matrix):
+        # 批大小
         batch_size = similarity_matrix.size(0)
 
         # 对角线元素
@@ -42,7 +49,7 @@ class Loss(nn.Module):
         col_max, _ = similarity_matrix.masked_fill(torch.eye(batch_size, device=device).bool(),
                                                    float('-inf')).max(dim=0)
 
-        # 计算 S1 和 S2
+        # 计算损失
         S1 = torch.clamp(self.margin + row_max - diag_elements, min=0)
         S2 = torch.clamp(self.margin + col_max - diag_elements, min=0)
 

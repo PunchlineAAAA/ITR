@@ -13,7 +13,8 @@ captions_file = './dataset/captions.txt'
 output_file = './dataset/output.pt'
 
 
-# 定义一个转换图像的函数
+# 读取图像函数
+# image_path: 图片路径
 def transform_image(image_path):
     image = Image.open(image_path).convert("RGB")
     return preprocess(image).to(device)
@@ -25,8 +26,9 @@ text_tensors = []
 
 # 使用 torch.no_grad() 以节省内存
 with torch.no_grad():
+    # 按 captions.txt 格式读取
     with open(captions_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()[1:]  # 跳过标题行
+        lines = f.readlines()[1:]
         for line in lines:
             # 使用第一个逗号分隔图像路径和文本
             image_path, text = line.strip().split(',', 1)

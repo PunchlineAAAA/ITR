@@ -7,6 +7,11 @@ from Loss import Loss
 import torch.optim as optim
 
 
+# 验证模型训练结果函数
+# model: 模型
+# dataloader: 数据加载器（外面定义）
+# device: GPU 或者 CPU
+# @return: 损失
 def evaluate_model(model, dataloader, device):
     model.eval()  # 切换到评估模式
     running_loss = 0.0
@@ -19,9 +24,19 @@ def evaluate_model(model, dataloader, device):
     return running_loss / len(dataloader)
 
 
+# 读取存档点
+# checkpoint_path: 存档点文件路径
+# model: 模型
+# optimizer: 优化器
+
+# epoch: 上次执行到的 epoch
+# loss: 上次的 loss
 def load_checkpoint(checkpoint_path, model, optimizer):
+    # 判断是否存在
     if os.path.exists(checkpoint_path):
         print(f"Loading checkpoint from {checkpoint_path}")
+
+        # 读取存档
         checkpoint = torch.load(checkpoint_path)
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
@@ -29,11 +44,19 @@ def load_checkpoint(checkpoint_path, model, optimizer):
         loss = checkpoint['loss']
         return epoch, loss
     else:
+        # 异常处理
         print("No checkpoint found, starting from scratch")
         return 0, float('inf')
 
 
+# 存档
+# epoch: 当前 epoch
+# model: 模型
+# optimizer: 优化器
+# loss: 损失
+# checkpoint_path: 存档文件所在路径
 def save_checkpoint(epoch, model, optimizer, loss, checkpoint_path):
+    # 存档逻辑
     torch.save({
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
@@ -68,13 +91,16 @@ if __name__ == "__main__":
 
     # 训练开始
     for epoch in range(start_epoch, start_epoch + num_epochs):
+        # 随机打乱训练
         indices = np.random.choice(39000, 1000, replace=False)
         sampler = torch.utils.data.SubsetRandomSampler(indices)
         dataloader = DataLoader(dataset, sampler=sampler, batch_size=batch_size, num_workers=8)
 
+        # 开始训练
         model.train()
         running_loss = 0.0
 
+        # 批处理
         for batch_idx, (images, captions) in enumerate(dataloader):
             optimizer.zero_grad()
 
@@ -92,7 +118,7 @@ if __name__ == "__main__":
         epoch_loss = running_loss / len(dataloader)
         print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {epoch_loss:.4f}')
 
-        # 验证阶段
+        # 验证阶段（每个epoch进行）
         validation_dataloader = DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
         validation_loss = evaluate_model(model, validation_dataloader, device)
         print(f'Epoch {epoch + 1}/{num_epochs}, Validation Loss: {validation_loss:.4f}')
