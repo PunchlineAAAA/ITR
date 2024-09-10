@@ -51,7 +51,7 @@ def calculate_i2t(size):
         print("r5", r5)
         print("r10", r10)
 
-    return r1 * 5 / len(image_paths), r5 * 5 / len(image_paths / 5), r10 * 5 / len(image_paths / 5)
+    return r1 * 5 / len(image_paths), r5 * 5 / len(image_paths), r10 * 5 / len(image_paths)
 
 
 # 计算文搜图 R@K
