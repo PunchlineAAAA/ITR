@@ -1,8 +1,7 @@
-import ImageToTextAttention
-import TextToImageAttention
+from utils import ImageToTextAttention, TextToImageAttention
 import torch.nn as nn
-from TextFeatureExtractor import TextFeatureExtractor
-from ImageFeatureExtractor import ImageFeatureExtractor
+from model.TextFeatureExtractor import TextFeatureExtractor
+from model.ImageFeatureExtractor import ImageFeatureExtractor
 
 
 # 图文交叉注意力模块

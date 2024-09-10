@@ -1,9 +1,9 @@
 import os.path
 import numpy as np
-from Dataset import CustomDataset, ValidationDataset
+from model.Dataset import CustomDataset, ValidationDataset
 import torch
 from torch.utils.data import DataLoader
-from Loss import Loss
+from model.Loss import Loss
 import torch.optim as optim
 
 

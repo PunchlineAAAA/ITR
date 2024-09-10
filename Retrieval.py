@@ -2,7 +2,7 @@ import torch
 import open_clip
 import torch.nn.functional as F
 from PIL import Image
-from Loss import Loss
+from model.Loss import Loss
 
 # 检查GPU是否可用，并将设备设置为GPU，否则使用CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

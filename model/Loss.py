@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from ImageTextCrossAttention import ImageTextCrossAttention
+from model.ImageTextCrossAttention import ImageTextCrossAttention
 
 # 设备检测
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -15,8 +15,8 @@ class Loss(nn.Module):
         self.margin = margin
         self.image_text_cross_attention = ImageTextCrossAttention()
 
-    # captions: 文本
-    # images: 图像路径
+    # captions: 文本特征张量
+    # images: 图像特征张量
     def forward(self, captions, images):
         batch_size = len(captions)
         similarity_matrix = torch.zeros((batch_size, batch_size), device=device)
