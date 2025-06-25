@@ -10,5 +10,5 @@
 /saved_models/model_epoch_9.pth
 /saved_models/model_epoch_10.pth
 /model/bert/
-/dataset/images.zip
-/dataset/output.pt
+/dataset/
+local_model/

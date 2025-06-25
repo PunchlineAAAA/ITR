@@ -17,7 +17,7 @@ def evaluate_model(model, dataloader, device):
     running_loss = 0.0
     with torch.no_grad():  # 禁用梯度计算
         for batch_idx, (images, captions) in enumerate(dataloader):
-            images, captions = images.to(device), captions.to(device)
+            # images, captions = images.to(device), captions.to(device)
             loss = model(captions, images)
             running_loss += loss.item()
 

@@ -1,0 +1,5 @@
+cd ITR
+
+conda activate itr_env
+
+python Train.py

@@ -4,7 +4,8 @@ import torch.nn as nn
 
 
 class TextFeatureExtractor(nn.Module):
-    def __init__(self, model_name="./model/bert"):
+    # def __init__(self, model_name="./model/bert"):
+    def __init__(self, model_name="bert-base-uncased"):
         super(TextFeatureExtractor, self).__init__()
 
         # 检查是否有GPU可用

@@ -8,7 +8,9 @@ from model.Loss import Loss
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # 加载预训练的 openclip 模型
-model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
+# model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b-s34b_b79k')
+model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained=None)
+model.load_state_dict(torch.load('./local_model/clip/open_clip_pytorch_model.bin'))
 model.to(device)
 model.eval()
 
